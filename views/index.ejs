@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GROUP CHAT</title>
+    <link rel='stylesheet' type='text/css' href='index.css'>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+</head>
+<body>
+    <div class='container'>
+        <center><img alt="WA" src="https://lazyscoop.files.wordpress.com/2015/08/smileys-for-whatsapp-memes-icon.png"></center>
+        <h1>WhatisApp!</h1>
+    </div>
+    <ul id="message"></ul>
+    <form action="/" method="POST" id="chats">
+        <input id="text" placeholder="Type message..." /><button>Send</button>
+    </form>
+    <script type='text/javascript'>
+            const socket = io.connect('http://localhost:8000');
+            $('form').submit(function(e){
+                e.preventDefault();
+                socket.emit('chat', $('#text').val());
+                $('#text').val('');
+                return false;
+            });
+            socket.on('chat', function(info){
+                $('#message').append($('<li>').html(info));
+            });
+            socket.on('online', function(username) {
+                $('#message').append($('<li>').html(username));
+            });
+            let username = prompt('Please tell me your name');
+            socket.emit('username', username);
+    </script>
+</body>
+</html>
